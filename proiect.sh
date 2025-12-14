@@ -10,6 +10,7 @@ fi
 
 mkdir "userfsRoot"
 echo "Scriptul UserFS a pornit"
+echo "Apasati m pentru a primi o lista cu comenzile posibile"
 
 # trebuie sa execut functia odata la 30s 
 
@@ -97,6 +98,35 @@ show_loggedOut_users() {
     done
 }
 
+
+search_for_user() {
+    target="$1"
+    found=-1
+    for x in "userfsRoot"/*; do 
+        [ -e "$x" ] || continue 
+        curr=$(basename "$x")
+        if [[ "$curr" == "$1" ]]; then 
+
+            if [ -f "$dirUser/lastLogin" ]; then 
+                ((found++))
+            else
+                ((found+=2))
+            fi
+            break 
+        fi
+    done
+
+    if [[ "$found" -eq -1 ]]; then 
+        echo "Utilizatorul $1 nu a fost logat pe sistem"
+    else 
+        if [[ "$found" -eq 0 ]]; then 
+            echo "Utilizatorul $1 a fost logat pe sitem la un moment dat, dar acum este delogat"
+        else 
+            echo "Utilizatorul $1 este logat pe sistem"
+        fi
+    fi  
+}
+
 update &
 upd_pid=$!
 trap "kill $upd_pid" EXIT
@@ -104,28 +134,38 @@ trap "kill $upd_pid" EXIT
 while true; do 
 
     read -r -n 1 ce
-
     case "$ce" in 
         1)
             echo
             count_active_users
             ;;
-
         2)
             echo
             show_active_users
             ;;
-
         3)
             echo
             count_loggedOut_users
             ;;
-        
         4)
             echo
             show_loggedOut_users
             ;;
+        5)
+            read pp
+            search_for_user "$pp"
+            ;;
+        m)
+            echo
+            echo "Apasati 1 pentru a primi numarul de utilizatori logati pe sistem"
+            echo "Apasati 2 pentru a primi o lista cu utilizatorii logati pe sistem"
+            echo "Apasati 3 pentru a primi numarul cu utilizatorii delogati de pe sistem"
+            echo "Apasati 4 pentru a primi o lista cu utilizatorii delogati de pe sistem"
+            echo "Apasati 5 si introduceti numele unui utilizator pentru a verifica daca utilizatorul este logat, delogat sau nu a fost niciodata logat pe sistem"
+            ;;
+
         *)
+            echo "$ce nu este o comanda valida"
             ;;
     esac
 done 
