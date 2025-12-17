@@ -107,7 +107,7 @@ search_for_user() {
         curr=$(basename "$x")
         if [[ "$curr" == "$1" ]]; then 
 
-            if [ -f "$dirUser/lastLogin" ]; then 
+            if [ -f "$x/lastLogin" ]; then 
                 ((found++))
             else
                 ((found+=2))
@@ -125,6 +125,27 @@ search_for_user() {
             echo "Utilizatorul $1 este logat pe sistem"
         fi
     fi  
+}
+
+last_seen_active() {
+	target=$1
+	for x in "userfsRoot"/*; do 
+        [ -e "$x" ] || continue 
+        curr=$(basename "$x")
+        if [[ "$curr" == "$1" ]]; then 
+
+            if [ -f "$x/lastLogin" ]; then 
+				cat "$x/lastLogin"
+				return 0
+            else
+				echo "Utilizatorul $curr este activ"
+				return 0	
+            fi
+            break 
+        fi
+    done
+
+	echo "Utilizatorul $target nu a fost logat pe sistem"
 }
 
 update &
@@ -155,6 +176,10 @@ while true; do
             read pp
             search_for_user "$pp"
             ;;
+		6)
+			read pp 
+			last_seen_active "$pp"
+			;;
         m)
             echo
             echo "Apasati 1 pentru a primi numarul de utilizatori logati pe sistem"
