@@ -190,6 +190,7 @@ while true; do
             echo "Apasati 3 pentru a primi numarul cu utilizatorii delogati de pe sistem"
             echo "Apasati 4 pentru a primi o lista cu utilizatorii delogati de pe sistem"
             echo "Apasati 5 si introduceti numele unui utilizator pentru a verifica daca utilizatorul este logat, delogat sau nu a fost niciodata logat pe sistem"
+            echo "Apasati 6 si introduceti numele unui utilizator pentru a afisa data ultimii sesiuni a acestuia in caz ca este delogat"
             ;;
 
         *)
