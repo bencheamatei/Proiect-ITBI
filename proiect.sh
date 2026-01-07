@@ -155,15 +155,13 @@ show_last_processes() {
                 echo "Utilizatorul $1 nu este logat pe sistem momentan"
                 return 0
             else 
-                if [ "$#" -ge 2 ]; then
-                    if [[ "$2"=="-a" ]]; then  
-                        tail "$x/procs"
-                    else 
-                        tail -n "$3" "$x/procs"
-                    fi
+                if [[ "$2" == "-a" ]]; then 
+                    cat "$x/procs"
+                elif [[ "$2" == "-n" ]]; then 
+                    tail -n "$3" "$x/procs"
                 else 
-                    tail -n 10 "$x/procs"
-                fi
+                    tail "$x/procs"
+                fi 
                 return 0
             fi
         fi
@@ -176,7 +174,7 @@ upd_pid=$!
 trap "kill $upd_pid" EXIT
 
 while true; do 
-    read -r -n 5 ce
+    read -r ce
     case "$ce" in 
         1)
             count_active_users
