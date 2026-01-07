@@ -10,7 +10,7 @@ fi
 
 mkdir "userfsRoot"
 echo "Scriptul UserFS a pornit"
-# trebuie sa execut functia odata la 30s 
+echo "Tastati man pentru a vedea manualul"
 
 update_data() {
     users=$(who | awk '{print $1}' | sort -u)
@@ -45,11 +45,14 @@ update_data() {
 
         curr=$(basename "$x")
         if ! echo "$users" | grep -q "^$curr$"; then 
-            >"$x/procs"
+            >"$x/procs" # lasam gol fisierul de procs 
             date > "$x/lastLogin"
         fi
     done
 }
+
+# core-ul proiectului in esenta 
+# trebuie sa avem grija sa nu avem un offset intre raspunsurile la query si update 
 
 update() {
     while true; do 
@@ -57,6 +60,10 @@ update() {
         sleep 30
     done 
 }
+
+# majoritatea functiilor de query merg cam in acelasi mod 
+# vezi folderul radacina, daca avem lastlogin -> delogat
+# in caz contrar activ
 
 count_active_users() {
     cnt=0
@@ -116,7 +123,6 @@ search_for_user() {
             break 
         fi
     done
-
     echo "Utilizatorul $1 nu a fost logat pe sistem"
 }
 
@@ -126,7 +132,6 @@ last_seen_active() {
         [ -e "$x" ] || continue 
         curr=$(basename "$x")
         if [[ "$curr" == "$1" ]]; then 
-
             if [ -f "$x/lastLogin" ]; then 
 				cat "$x/lastLogin"
 				return 0
@@ -193,7 +198,14 @@ while true; do
             break 
             ;;
         man)
-            echo "aici ar trebui sa fie un manual, il punem dupa"
+            echo "Tastati 1 pentru a afisa # de utilizatori activi"
+            echo "Tastati 2 pentru a afisa utilizatorii activi"
+            echo "Tastati 3 pentru a afisa # de utilizatori delogati"
+            echo "Tastati 4 pentru a afisa utilizatorii delogati"
+            echo "Tastati 5 si introduceti un nume de utilizator pentru a afisa starea acestuia (activ/delogat/never logged)"
+            echo "Tastati 6 si introduceti un nume de utilizator pentru a afisa data si ora ultima sesiuni a acestuia (daca este delogat)"
+            echo "Tastati 7 si introduceti un nume de utilizator pentru a afisa ultimele 10 procese ale acestuia"
+            echo "Tastati exit pentru a opri UserFS"
             ;;
 
         *)
