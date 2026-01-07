@@ -155,7 +155,15 @@ show_last_processes() {
                 echo "Utilizatorul $1 nu este logat pe sistem momentan"
                 return 0
             else 
-                tail -n 10 "$x/procs"
+                if [ "$#" -ge 2 ]; then
+                    if [[ "$2"=="-a" ]]; then  
+                        tail "$x/procs"
+                    else 
+                        tail -n "$3" "$x/procs"
+                    fi
+                else 
+                    tail -n 10 "$x/procs"
+                fi
                 return 0
             fi
         fi
@@ -191,8 +199,8 @@ while true; do
 			last_seen_active "$pp"
 			;;
         7)
-            read pp
-            show_last_processes "$pp"
+            read pp fl nr
+            show_last_processes "$pp" "$fl" "$nr"
             ;;
         exit)
             break 
