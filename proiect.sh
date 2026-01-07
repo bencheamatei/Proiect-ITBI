@@ -10,8 +10,6 @@ fi
 
 mkdir "userfsRoot"
 echo "Scriptul UserFS a pornit"
-echo "Apasati m pentru a primi o lista cu comenzile posibile"
-
 # trebuie sa execut functia odata la 30s 
 
 update_data() {
@@ -68,7 +66,7 @@ count_active_users() {
             ((cnt++))
         fi
     done
-    echo "$cnt"
+    echo "Sunt $cnt utilizatori logati pe sistem in momentul de fata"
 }
 
 show_active_users() {
@@ -89,7 +87,7 @@ count_loggedOut_users() {
             ((cnt++))
         fi
     done
-    echo "$cnt"
+    echo "Sunt $cnt utilizatori delogati de pe sistem in momentul de fata"
 }
 
 show_loggedOut_users() {
@@ -104,30 +102,22 @@ show_loggedOut_users() {
 
 search_for_user() {
     target="$1"
-    found=-1
     for x in "userfsRoot"/*; do 
         [ -e "$x" ] || continue 
         curr=$(basename "$x")
         if [[ "$curr" == "$1" ]]; then 
-
             if [ -f "$x/lastLogin" ]; then 
-                ((found++))
+                echo "Utilizatorul $1 a fost logat pe sitem la un moment dat, dar acum este delogat"
+                return 0
             else
-                ((found+=2))
+                echo "Utilizatorul $1 este logat pe sistem"
+                return 0
             fi
             break 
         fi
     done
 
-    if [[ "$found" -eq -1 ]]; then 
-        echo "Utilizatorul $1 nu a fost logat pe sistem"
-    else 
-        if [[ "$found" -eq 0 ]]; then 
-            echo "Utilizatorul $1 a fost logat pe sitem la un moment dat, dar acum este delogat"
-        else 
-            echo "Utilizatorul $1 este logat pe sistem"
-        fi
-    fi  
+    echo "Utilizatorul $1 nu a fost logat pe sistem"
 }
 
 last_seen_active() {
@@ -147,7 +137,6 @@ last_seen_active() {
             break 
         fi
     done
-
 	echo "Utilizatorul $target nu a fost logat pe sistem"
 }
 
@@ -155,14 +144,13 @@ show_last_processes() {
     target=$1
     for x in "userfsRoot"/*; do 
         [ -e "$x" ] || continue 
-
         curr=$(basename "$x")
         if [[ "$curr" == "$1" ]]; then 
             if [ -f "$x/lastLogin" ]; then 
                 echo "Utilizatorul $1 nu este logat pe sistem momentan"
                 return 0
             else 
-                tail -n 10 "$x/lastLogin"
+                tail -n 10 "$x/procs"
                 return 0
             fi
         fi
@@ -175,23 +163,18 @@ upd_pid=$!
 trap "kill $upd_pid" EXIT
 
 while true; do 
-
-    read -r -n 1 ce
+    read -r -n 5 ce
     case "$ce" in 
         1)
-            echo
             count_active_users
             ;;
         2)
-            echo
             show_active_users
             ;;
         3)
-            echo
             count_loggedOut_users
             ;;
         4)
-            echo
             show_loggedOut_users
             ;;
         5)
@@ -202,14 +185,15 @@ while true; do
 			read pp 
 			last_seen_active "$pp"
 			;;
-        m)
-            echo
-            echo "Apasati 1 pentru a primi numarul de utilizatori logati pe sistem"
-            echo "Apasati 2 pentru a primi o lista cu utilizatorii logati pe sistem"
-            echo "Apasati 3 pentru a primi numarul cu utilizatorii delogati de pe sistem"
-            echo "Apasati 4 pentru a primi o lista cu utilizatorii delogati de pe sistem"
-            echo "Apasati 5 si introduceti numele unui utilizator pentru a verifica daca utilizatorul este logat, delogat sau nu a fost niciodata logat pe sistem"
-            echo "Apasati 6 si introduceti numele unui utilizator pentru a afisa data ultimii sesiuni a acestuia in caz ca este delogat"
+        7)
+            read pp
+            show_last_processes "$pp"
+            ;;
+        exit)
+            break 
+            ;;
+        man)
+            echo "aici ar trebui sa fie un manual, il punem dupa"
             ;;
 
         *)
