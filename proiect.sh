@@ -174,44 +174,43 @@ upd_pid=$!
 trap "kill $upd_pid" EXIT
 
 while true; do 
-    read -r ce
+    read -r ce pp fl nr
     case "$ce" in 
-        1)
+        cnta)
             count_active_users
             ;;
-        2)
+        swa)
             show_active_users
             ;;
-        3)
+        cnti)
             count_loggedOut_users
             ;;
-        4)
+        swi)
             show_loggedOut_users
             ;;
-        5)
-            read pp
+        search)
             search_for_user "$pp"
             ;;
-		6)
-			read pp 
+		last)
 			last_seen_active "$pp"
 			;;
-        7)
-            read pp fl nr
+        procs)
             show_last_processes "$pp" "$fl" "$nr"
             ;;
         exit)
             break 
             ;;
         man)
-            echo "Tastati 1 pentru a afisa # de utilizatori activi"
-            echo "Tastati 2 pentru a afisa utilizatorii activi"
-            echo "Tastati 3 pentru a afisa # de utilizatori delogati"
-            echo "Tastati 4 pentru a afisa utilizatorii delogati"
-            echo "Tastati 5 si introduceti un nume de utilizator pentru a afisa starea acestuia (activ/delogat/never logged)"
-            echo "Tastati 6 si introduceti un nume de utilizator pentru a afisa data si ora ultima sesiuni a acestuia (daca este delogat)"
-            echo "Tastati 7 si introduceti un nume de utilizator pentru a afisa ultimele 10 procese ale acestuia"
-            echo "Tastati exit pentru a opri UserFS"
+            echo "cnta afiseaza numarul de utilizatori logati pe sistem"
+            echo "cnti afiseaza numarul de utilizatori delogati de pe sistem"
+            echo "swa afiseaza o lista cu utilizatorii logati pe sistem"
+            echo "swi afiseaza o lista cu utilizatorii delogati de pe sistem"
+            echo "search <user> afiseaza starea utilizatorului user (logat/delogat/nu a fost logat)"
+            echo "last <user> afiseaza ultima data cand utilizatorul user s-a delogat de pe sistem"
+            echo "procs <user> [op] afiseaza procesele utilizatorului user"
+            echo " -a afiseaza toate procesele utilizatorului"
+            echo " -n urmat de un numar x afiseaza ultimele x procese ale utilizatorului"
+            echo "exit opreste UserFS"
             ;;
 
         *)
