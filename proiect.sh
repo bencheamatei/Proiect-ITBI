@@ -1,5 +1,15 @@
 #!/bin/bash
 
+timp=30
+if [[ $# -gt 0 ]]; then 
+    if [[ $1 =~ ^[0-9]+$ ]]; then
+        timp="$1"
+    else
+        echo "Problemuta"
+        exit 0
+    fi
+fi
+
 # aici initializez directorul radacina, daca el exista cumva
 # atunci il sterg (ca sa nu am informatia redundanta de data trecuta)
 # eventual pot sa modific asta dupa 
@@ -57,7 +67,7 @@ update_data() {
 update() {
     while true; do 
         update_data
-        sleep 30
+        sleep "$timp"
     done 
 }
 
@@ -201,16 +211,18 @@ while true; do
             break 
             ;;
         man)
-            echo "cnta afiseaza numarul de utilizatori logati pe sistem"
-            echo "cnti afiseaza numarul de utilizatori delogati de pe sistem"
-            echo "swa afiseaza o lista cu utilizatorii logati pe sistem"
-            echo "swi afiseaza o lista cu utilizatorii delogati de pe sistem"
-            echo "search <user> afiseaza starea utilizatorului user (logat/delogat/nu a fost logat)"
-            echo "last <user> afiseaza ultima data cand utilizatorul user s-a delogat de pe sistem"
-            echo "procs <user> [op] afiseaza procesele utilizatorului user"
+            echo "----------------------------------------UserFS----------------------------------------"
+            echo "cnta - afiseaza numarul de utilizatori logati pe sistem"
+            echo "cnti - afiseaza numarul de utilizatori delogati de pe sistem"
+            echo "swa - afiseaza o lista cu utilizatorii logati pe sistem"
+            echo "swi - afiseaza o lista cu utilizatorii delogati de pe sistem"
+            echo "search <user> - afiseaza starea utilizatorului user (logat/delogat/nu a fost logat)"
+            echo "last <user> - afiseaza ultima data cand utilizatorul user s-a delogat de pe sistem"
+            echo "procs <user> [op] - afiseaza procesele utilizatorului user"
             echo " -a afiseaza toate procesele utilizatorului"
             echo " -n urmat de un numar x afiseaza ultimele x procese ale utilizatorului"
-            echo "exit opreste UserFS"
+            echo "exit - opreste UserFS"
+            echo "--------------------------------------------------------------------------------------"
             ;;
 
         *)
